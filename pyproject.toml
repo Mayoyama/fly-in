@@ -1,0 +1,16 @@
+[project]
+name = "fly-in"
+version = "0.1.0"
+description = "Drone management simulation"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+	"pydantic>=2.0.0",
+]
+
+[dependency-groups]
+dev = [
+	"flake8>=7.3.0",
+	"mypy>=2.1.0",
+	"pytest>=8.0.0",
+]
