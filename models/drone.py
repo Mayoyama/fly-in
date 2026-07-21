@@ -2,11 +2,13 @@ from enum import Enum
 from dataclasses import dataclass
 import logging
 
+
 @dataclass
 class Move:
     """Dataclass to hold move data for Scheduler"""
     drone_id: int
     dest: str
+
 
 logger = logging.getLogger(__name__)
 

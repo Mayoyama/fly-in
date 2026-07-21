@@ -20,13 +20,13 @@ class HubRole(Enum):
 
 class Zone:
     def __init__(self, name: str, x_coord: int, y_coord: int,
-                 zone_type: ZoneType, colour: str, max_drones: int,
+                 zone_type: ZoneType, color: str | None, max_drones: int,
                  hub_role: HubRole) -> None:
         self.name = name
         self.coords = (x_coord, y_coord)
         self.zone_type = zone_type
         self.hub_role = hub_role
-        self.colour = colour
+        self.color = color
         self.max_drones = max_drones
         self.curr_drone_count = 0
 
