@@ -1,0 +1,50 @@
+# Challenger Level 2: The Shattered Route - blocked decoys woven through a large network
+nb_drones: 20
+
+start_hub: start 0 0 [color=green]
+hub: choke1 2 0 [color=red max_drones=1]
+hub: choke2 3 0 [color=red max_drones=1]
+hub: choke3 4 0 [color=red max_drones=1]
+hub: forbidden_zone1 2 2 [zone=blocked color=black]
+hub: forbidden_zone2 3 2 [zone=blocked color=black]
+hub: maze1 2 1 [color=purple]
+hub: maze2 3 1 [color=purple]
+hub: maze3 4 1 [color=purple max_drones=2]
+hub: maze4 4 2 [color=purple max_drones=2]
+hub: maze_exit 5 1 [color=blue max_drones=3]
+hub: cross1 5 0 [zone=restricted color=brown max_drones=2]
+hub: cross2 6 0 [zone=restricted color=brown max_drones=2]
+hub: express1 5 -1 [zone=priority color=cyan max_drones=2]
+hub: express2 6 -1 [zone=priority color=cyan max_drones=2]
+hub: express_trap 7 -1 [zone=blocked color=black]
+hub: conv 7 0 [color=yellow max_drones=6]
+hub: final1 8 0 [color=orange max_drones=3]
+hub: final2 9 0 [color=orange max_drones=2]
+hub: final3 10 0 [color=orange max_drones=1]
+end_hub: goal 11 0 [color=gold]
+
+connection: start-choke1 [max_link_capacity=1]
+connection: choke1-choke2 [max_link_capacity=1]
+connection: choke2-choke3 [max_link_capacity=1]
+connection: choke1-maze1
+connection: maze1-forbidden_zone1
+connection: maze1-maze2
+connection: maze2-forbidden_zone2
+connection: maze2-maze3
+connection: maze3-maze4
+connection: maze3-maze_exit
+connection: maze4-maze_exit
+connection: choke2-maze2
+connection: choke3-cross1
+connection: cross1-cross2
+connection: cross2-conv
+connection: choke3-express1
+connection: express1-express2
+connection: express2-express_trap
+connection: express_trap-goal
+connection: express2-conv [max_link_capacity=2]
+connection: maze_exit-conv
+connection: conv-final1 [max_link_capacity=3]
+connection: final1-final2 [max_link_capacity=2]
+connection: final2-final3 [max_link_capacity=1]
+connection: final3-goal

@@ -15,7 +15,8 @@ def main() -> None:
     map_dict = {i + 1: map_path for i, map_path in enumerate(map_list)}
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("Welcome to Fly-in!".center(60, '='))
+        print("Welcome to Fly-in!".center(100, '='))
+        print("\nMap List:")
 
         for i, map_path in map_dict.items():
             print(f"{i}: {map_path}")

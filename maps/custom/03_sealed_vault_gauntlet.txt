@@ -1,0 +1,44 @@
+# Hard Level 5: Parallel entry gates plus a sealed vault decoy shortcut
+nb_drones: 12
+
+start_hub: start 0 0 [color=green]
+hub: gate1 1 -1 [color=orange max_drones=1]
+hub: gate2 1 0 [color=orange max_drones=1]
+hub: gate3 1 1 [color=orange max_drones=1]
+hub: queue1 2 -1 [color=blue max_drones=3]
+hub: queue2 2 0 [color=blue max_drones=3]
+hub: queue3 2 1 [color=blue max_drones=3]
+hub: sealed_vault 3 0 [zone=blocked color=black]
+hub: tunnel1 3 -1 [zone=restricted color=red max_drones=2]
+hub: tunnel2 4 -1 [zone=restricted color=red max_drones=2]
+hub: priority_lane1 3 1 [zone=priority color=cyan max_drones=2]
+hub: priority_lane2 4 1 [zone=priority color=cyan max_drones=2]
+hub: convergence 5 0 [color=yellow max_drones=6]
+hub: final_gate1 6 -1 [color=orange max_drones=2]
+hub: final_gate2 6 1 [color=orange max_drones=2]
+hub: last_stretch 7 0 [color=magenta max_drones=4]
+end_hub: goal 8 0 [color=gold]
+
+connection: start-gate1
+connection: start-gate2
+connection: start-gate3
+connection: gate1-queue1
+connection: gate2-queue2
+connection: gate3-queue3
+connection: queue1-sealed_vault
+connection: sealed_vault-convergence
+connection: sealed_vault-priority_lane1
+connection: sealed_vault-priority_lane2
+connection: queue1-tunnel1
+connection: tunnel1-tunnel2
+connection: tunnel2-convergence
+connection: queue2-queue1
+connection: queue2-queue3
+connection: queue3-priority_lane1
+connection: priority_lane1-priority_lane2
+connection: priority_lane2-convergence [max_link_capacity=2]
+connection: convergence-final_gate1
+connection: convergence-final_gate2
+connection: final_gate1-last_stretch
+connection: final_gate2-last_stretch
+connection: last_stretch-goal

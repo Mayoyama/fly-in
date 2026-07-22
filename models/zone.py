@@ -40,6 +40,19 @@ class Zone:
         self.max_drones = max_drones
         self.curr_drone_count = 0
 
+    def get_max_capacity(self) -> int:
+        """Return max_drones this zone can hold.
+
+        Returns:
+            0 if blocked; sys.maxsize for start/end hubs;
+            otherwise self.max_drones.
+        """
+        if self.zone_type == ZoneType.BLOCKED:
+            return 0
+        if self.hub_role == HubRole.START or self.hub_role == HubRole.END:
+            return maxsize
+        return self.max_drones
+
     def available_capacity(self) -> int:
         """Return how many more drones this zone can currently hold.
 

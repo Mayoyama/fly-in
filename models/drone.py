@@ -5,9 +5,13 @@ from sys import stderr
 
 @dataclass
 class Move:
-    """A single scheduled move: which drone, and its destination zone."""
+    """A single scheduled move: which drone, when, and where — either
+    the destination zone (arrived) or the connection when it's currently
+    transiting toward a restricted zone."""
     drone_id: int
     dest: str
+    turn_nb: int
+    in_transit: bool
 
 
 class DroneStatus(Enum):
