@@ -3,9 +3,10 @@ from math import pi, cos, sin
 import pygame
 
 
-def word_to_color(word: str) -> tuple[int, int, int]:
+def _word_to_color(word: str) -> tuple[int, int, int]:
+    """Deterministically derive a brightened RGB color from a string."""
     def rescale_brightness(value: int) -> int:
-        min_brightness = 30
+        min_brightness = 15
         return min_brightness + int((value) * (255 - min_brightness) / 255)
 
     total = sum(ord(c) for c in word)
@@ -16,16 +17,22 @@ def word_to_color(word: str) -> tuple[int, int, int]:
 
 
 def resolve_color(name: str | None) -> pygame.Color:
+    """Resolve a zone's color name to a pygame Color.
+
+    Falls back to a derived color for unrecognized names, or dark grey
+    if name is None.
+    """
     if name is None:
         return pygame.Color(30, 30, 30)
     try:
         return pygame.Color(name)
     except ValueError:
-        return pygame.Color(*word_to_color(name))
+        return pygame.Color(*_word_to_color(name))
 
 
 def draw_rainbow_outline(screen: pygame.Surface, center: tuple[int, int],
                          radius: float, segments: int) -> None:
+    """Draw a multi-segment rainbow-gradient ring outline at center."""
     cx, cy = center
     width = int(max(1, 0.3 * radius))
     outline_radius = radius - width / 2

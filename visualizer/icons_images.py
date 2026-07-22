@@ -70,6 +70,8 @@ def make_overflow_badge(size: int, text: str = "5+") -> pygame.Surface:
 
 
 def get_scaled_img(win_width: int, win_height: int) -> pygame.Surface:
+    """Return the terrain background image scaled and cropped to fill
+    the window, or a plain dark fallback if the image can't be loaded."""
     try:
         bkg_img = pygame.image.load("resources/terrain_v1.png")
         scale = max((win_width / bkg_img.get_width()),
@@ -81,7 +83,7 @@ def get_scaled_img(win_width: int, win_height: int) -> pygame.Surface:
         crop_y = int((bkg_height - win_height) / 2)
         crop_rect = pygame.Rect(crop_x, crop_y, win_width, win_height)
         scaled_surf = b_surf.subsurface(crop_rect)
-    except (FileNotFoundError, PermissionError):
+    except (FileNotFoundError, IsADirectoryError, PermissionError):
         scaled_surf = pygame.Surface((win_width, win_height))
         scaled_surf.fill((10, 10, 10))
     return scaled_surf

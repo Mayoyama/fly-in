@@ -1,21 +1,46 @@
 import pygame
+from sys import stderr
 from models.zone import Zone, HubRole
 from .color_utils import draw_rainbow_outline
 from .icons_images import make_drone_icon, make_overflow_badge
 
 
-def make_popup(name: str, zone_info: Zone) -> pygame.Surface:
+def draw_heading(win_width: int, head_height: int, text: str,
+                 font_path: str, font_color: str = "white",
+                 background_color: str = "black",
+                 font_size: int = 20) -> pygame.Surface:
+    """Render the title heading bar as a standalone Surface.
+
+    Falls back to the system font if font_path can't be loaded.
+    """
+    try:
+        heading_font = pygame.font.Font(font_path, font_size)
+    except (FileNotFoundError, IsADirectoryError, PermissionError) as e:
+        print(f"Font file loading error: {e}\nDefaulting to standard sysfont",
+              file=stderr)
+        heading_font = pygame.font.SysFont(None, font_size)
+    heading_surf = pygame.Surface((win_width, head_height))
+    heading_surf.fill(background_color)
+    center = (win_width / 2, head_height / 2)
+    title_surf = heading_font.render(text, True, font_color)
+    title_rect = title_surf.get_rect(center=center)
+    heading_surf.blit(title_surf, title_rect)
+    return heading_surf
+
+
+def make_popup(zone_info: Zone) -> pygame.Surface:
+    """Render a zone's info card (name, hub role, coords, drone count)."""
     font = pygame.font.SysFont(None, 16)
     pad = 2
 
     popup_message = ""
     if zone_info.hub_role == HubRole.START:
-        popup_message += f"Name: {name} (START)\n"
+        popup_message += f"Name: {zone_info.name} (START)\n"
     elif zone_info.hub_role == HubRole.END:
-        popup_message += f"Name: {name} (END)\n"
+        popup_message += f"Name: {zone_info.name} (END)\n"
     else:
-        popup_message += f"Name: {name}\n"
-    popup_message += (f"Co-ords: {zone_info.coords}\n"
+        popup_message += f"Name: {zone_info.name}\n"
+    popup_message += (f"Coords: {zone_info.coords}\n"
                       f"Current: {zone_info.curr_drone_count}\n"
                       f"Max: {zone_info.max_drones}")
 
@@ -36,8 +61,10 @@ def make_popup(name: str, zone_info: Zone) -> pygame.Surface:
         y += line_surf.get_height()
     return popup_surf
 
+
 def draw_menu(win_width: int, win_height: int,
               menu_height: int) -> pygame.Surface:
+    """Render the bottom legend bar showing icon/outline meanings."""
     menu_surf = pygame.Surface((win_width, menu_height))
     menu_surf.fill((0, 128, 128), menu_surf.get_rect())
     menu_font = pygame.font.SysFont(None, 16)
@@ -67,9 +94,9 @@ def draw_menu(win_width: int, win_height: int,
     row1_start_x = (win_width // 2) - (row1_width // 2)
     row2_start_x = (win_width // 2) - (row2_width // 2)
 
-    x, y = row1_start_x, 10  
+    x, y = row1_start_x, 10
     drone_rect = menu_surf.blit(drone, (x, y))
-    x = drone_rect.right + gap_internal       
+    x = drone_rect.right + gap_internal
     drone_label_rect = menu_surf.blit(drone_surf, (x, y + 2))
 
     x = drone_label_rect.right + 20

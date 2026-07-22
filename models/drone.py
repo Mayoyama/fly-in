@@ -1,19 +1,17 @@
 from enum import Enum
 from dataclasses import dataclass
-import logging
+from sys import stderr
 
 
 @dataclass
 class Move:
-    """Dataclass to hold move data for Scheduler"""
+    """A single scheduled move: which drone, and its destination zone."""
     drone_id: int
     dest: str
 
 
-logger = logging.getLogger(__name__)
-
-
 class DroneStatus(Enum):
+    """Whether a drone is idle (stationary) or mid-transit (restricted)."""
     STATIONARY = "stationary"
     RESTRICTED = "restricted"
 
@@ -21,6 +19,14 @@ class DroneStatus(Enum):
 class Drone:
     def __init__(self, drone_id: int, status: DroneStatus, curr_pos: str,
                  target: str) -> None:
+        """Initialize a drone at a starting position with a target.
+
+        Args:
+            drone_id: Unique identifier for this drone.
+            status: Initial movement status.
+            curr_pos: Name of the zone the drone currently occupies.
+            target: Name of the zone the drone is heading toward.
+        """
         self.drone_id = drone_id
         self.status = status
         self.curr_pos = curr_pos
@@ -29,21 +35,31 @@ class Drone:
         self.turns_to_restricted = 0
 
     def increase_move_count(self) -> None:
+        """Increment this drone's total completed move count."""
         self.total_move_count += 1
 
     def set_to_restricted(self) -> None:
+        """Begin a 2-turn restricted-zone transit.
+
+        Raises:
+            ValueError: If the drone is not currently STATIONARY.
+        """
         if self.status == DroneStatus.STATIONARY:
             self.turns_to_restricted = 2
             self.status = DroneStatus.RESTRICTED
         else:
-            logger.debug("Illegal function call: [set_to_restricted]")
             raise ValueError("Drone not STATIONARY. Cannot assign RESTRICTED "
                              "status")
 
     def update_status(self) -> None:
+        """Advance restricted-transit countdown by one turn.
+
+        Once the countdown reaches 0, the drone becomes STATIONARY
+        and arrives at its target zone.
+        """
         if self.status == DroneStatus.STATIONARY:
-            logger.debug(f"Call to [update_status] when drone status is "
-                         f"already {self.status}")
+            print(f"Call to [update_status] when drone status is "
+                  f"already {self.status}", file=stderr)
         if (
           self.status == DroneStatus.RESTRICTED
           and self.turns_to_restricted >= 1

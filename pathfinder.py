@@ -3,7 +3,7 @@ from models.connection import ZoneConnection
 from models.zone import Zone, HubRole
 
 
-def find_path(start: str, conn_dict: dict[frozenset, ZoneConnection],
+def find_path(start: str, conn_dict: dict[frozenset[str], ZoneConnection],
               zone_dict: dict[str, Zone]) -> list[str]:
     queue: deque[list[str]] = deque([[start]])
     visited: set[str] = {start}

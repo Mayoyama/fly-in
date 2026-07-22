@@ -6,6 +6,7 @@ from models.zone import HubRole, ZoneType
 
 
 class ZoneInfo(BaseModel):
+    """Validated data for a single zone parsed from a map file."""
     model_config = ConfigDict(extra="forbid")
     zone_name: str = Field(min_length=1)
     x_coord: int
@@ -26,6 +27,8 @@ class ZoneInfo(BaseModel):
 
 
 class ConnectionInfo(BaseModel):
+    """Validated data for a single zone-to-zone connection parsed
+    from a map file."""
     model_config = ConfigDict(extra="forbid")
     max_link_capacity: int = Field(ge=1, default=1)
     name1: str = Field(min_length=1)
@@ -43,6 +46,7 @@ class ConnectionInfo(BaseModel):
 
 
 def _convert_atoi(value: str) -> int:
+    """Convert a string to an int, re-raising ValueError on failure."""
     try:
         num = int(value)
     except ValueError:
@@ -51,12 +55,24 @@ def _convert_atoi(value: str) -> int:
 
 
 def _get_parsing_data(path_to_map_file: str) -> list[str]:
+    """Read a map file and return its lines.
+
+    Raises:
+        FileNotFoundError, PermissionError, IsADirectoryError,
+        NotADirectoryError: If the file can't be opened.
+    """
     with open(path_to_map_file, "r") as file_obj:
         map_data = file_obj.readlines()
     return map_data
 
 
 def _create_zone_info(line: str) -> tuple[HubRole, ZoneInfo]:
+    """Parse a single 'hub'/'start_hub'/'end_hub' line into a
+    (HubRole, ZoneInfo) pair.
+
+    Raises:
+        ValueError: If the line's syntax, hub type, or metadata is invalid.
+    """
     line_data = line.split(':', maxsplit=1)
     if len(line_data) != 2:
         raise ValueError("Invalid line syntax, wrong number of ':' detected "
@@ -106,6 +122,11 @@ def _create_zone_info(line: str) -> tuple[HubRole, ZoneInfo]:
 
 
 def _create_connection_info(line: str) -> ConnectionInfo:
+    """Parse a single 'connection:' line into a ConnectionInfo.
+
+    Raises:
+        ValueError: If the line's syntax or metadata is invalid.
+    """
     line_data = line.split(':', maxsplit=1)
     if len(line_data) != 2:
         raise ValueError("Invalid line syntax, wrong number of ':' detected "
@@ -144,16 +165,34 @@ def _create_connection_info(line: str) -> ConnectionInfo:
 
 class Parser:
     def __init__(self, path_to_map_file: str) -> None:
-        self.map_path = path_to_map_file
+        """Load raw map file contents for later parsing.
+
+        Args:
+            path_to_map_file: Path to the map file to read.
+
+        Raises:
+            FileNotFoundError, PermissionError, IsADirectoryError,
+            NotADirectoryError: If the file can't be opened.
+        """
         self.drone_count = 0
         self.zone_list: list[tuple[HubRole, ZoneInfo]] = []
         self.connection_list: list[ConnectionInfo] = []
         try:
-            self.map_data = _get_parsing_data(self.map_path)
-        except (FileNotFoundError, PermissionError, IsADirectoryError):
+            self.map_data = _get_parsing_data(path_to_map_file)
+        except (FileNotFoundError, PermissionError,
+                IsADirectoryError, NotADirectoryError):
             raise
 
     def parse_map_data(self) -> None:
+        """Parse the loaded map data into drone_count, zone_list, and
+        connection_list.
+
+        Raises:
+            ValueError: If the map format is invalid, e.g. missing
+                start/end hub, duplicate zone names, duplicate
+                connections, or malformed lines (each wrapped with
+                the offending line number).
+        """
         first_line = True
         has_start = False
         has_end = False
@@ -165,6 +204,9 @@ class Parser:
                 if line.startswith('nb_drones:'):
                     raw_count = line.split(':', maxsplit=1)[1]
                     self.drone_count = _convert_atoi(raw_count)
+                    if self.drone_count <= 0:
+                        raise ValueError(f"Line {i}: [nb_drones] must be a "
+                                         "positive integer")
                     first_line = False
                 else:
                     raise ValueError(f"Line {i}: [nb_drones] field must be on "
