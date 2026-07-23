@@ -1,5 +1,6 @@
 from simulation import Engine
 from pathlib import Path
+from pathfinder import ScheduleError
 from sys import stderr
 import os
 
@@ -65,5 +66,9 @@ if __name__ == "__main__":
         print("\nCTRL + D detected. Exiting program")
     except KeyboardInterrupt:
         print("\nCTRL + C detected. Exiting program")
+    except ScheduleError as e:
+        print(f"\nSchedule Error: {e}")
+    except AssertionError as e:
+        print(f"\nAssert Error: {e}")
     except Exception as e:
         print(f"\nGeneral exception thrown: {e}")

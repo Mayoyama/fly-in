@@ -4,7 +4,7 @@ from models.connection import ZoneConnection
 from visualizer.visualizer import Visualizer
 from parser import Parser
 from world_builder import build_drone, build_zone, build_zone_connection
-from pathfinder import find_path
+from pathfinder import make_single_path, Scheduler
 import pygame
 
 
@@ -36,22 +36,22 @@ class Engine:
         visualizer.wait_to_start()
         if not visualizer.running:
             return
-        delivered = 0
-        for drone_id in sorted(self.drones.keys()):
-            drone = self.drones[drone_id]
-            path = find_path(self.start_point, self.connections, self.zones)
-            for next_zone in path[1:]:
-                drone.curr_pos = next_zone  # NEEDS TO BE CHANGED FOR REAL ALGO
-                drone.target = next_zone
-                visualizer.clock.tick(3)
-                visualizer.render_frame()
-                if not visualizer.running:
-                    break
-                print(f"D{drone_id}-{next_zone}")
-            if not visualizer.running:
-                break
-            if drone.curr_pos == self.end_point:
-                delivered += 1
+        # delivered = 0
+        # for drone_id in sorted(self.drones.keys()):
+        #     drone = self.drones[drone_id]
+        #     path = find_path(self.start_point, self.connections, self.zones)
+        #     for next_zone in path[1:]:
+        #         drone.curr_pos = next_zone  # NEEDS TO BE CHANGED
+        #         drone.target = next_zone
+        #         visualizer.clock.tick(3)
+        #         visualizer.render_frame()
+        #         if not visualizer.running:
+        #             break
+        #         print(f"D{drone_id}-{next_zone}")
+        #     if not visualizer.running:
+        #         break
+        #     if drone.curr_pos == self.end_point:
+        #         delivered += 1
         while visualizer.running:
             visualizer.clock.tick(60)
             visualizer.render_frame()

@@ -18,6 +18,7 @@ class ZoneInfo(BaseModel):
     @field_validator("zone_name")
     @classmethod
     def exclude_chars(cls, value: str) -> str:
+        """Reject zone names containing dashes or spaces."""
         banned = {"-", " "}
         found = banned.intersection(value)
         if found:
@@ -37,6 +38,7 @@ class ConnectionInfo(BaseModel):
     @field_validator("name1", "name2")
     @classmethod
     def exclude_chars(cls, value: str) -> str:
+        """Reject connection endpoint names containing dashes or spaces."""
         banned = {"-", " "}
         found = banned.intersection(value)
         if found:
@@ -118,6 +120,9 @@ def _create_zone_info(line: str) -> tuple[HubRole, ZoneInfo]:
         y_coord=_convert_atoi(y),
         **metadata
     )
+    if hub_type in (HubRole.START, HubRole.END) and \
+            zone_info.zone == ZoneType.BLOCKED:
+        raise ValueError("start_hub/end_hub cannot be a blocked zone")
     return hub_type, zone_info
 
 

@@ -5,6 +5,14 @@ or if this is a new session picking this project back up.** These rules
 persist for the whole project and should not need to be re-negotiated each
 time — apply them by default rather than waiting to be reminded.
 
+**Also read `FLYIN_ALGO_SESSION_2026-07-22.md`** (same repo root) once the
+algorithm phase has started. That file is the living handoff for the actual
+pathfinding/scheduling work — architecture decisions, code already written,
+resolved design questions, and the concrete next step. This rules file
+covers behavior/process; that file covers the algorithm's technical state.
+Check whether it needs a further update at the end of any session that
+touches the algorithm, the same way this file gets updated.
+
 ## The one rule above all others
 
 **"If you are unsure about ANYTHING, ask me first."** — the user's exact
@@ -96,6 +104,20 @@ regardless of what's asked.
   before proceeding, especially on design/architecture choices.
 - Keep tone matter-of-fact when flagging bugs — proportionate to the actual
   bug, not dramatic.
+
+## Added this session (2026-07-23) — repeated enough this session to be
+## worth a permanent rule, not a one-off
+
+- **Actually read the file before asserting something is/isn't done.**
+  Several times this session I claimed a fix, wiring, or rename "hasn't
+  been done yet" without re-reading the current file first — the user
+  had already made the change, or I'd misremembered the state from a few
+  messages back. Read access to the user's project files is generally
+  fine to use freely, read-only, without asking each time (this doesn't
+  conflict with "never Edit/Write without confirmation" above — reading
+  is not editing). If genuinely unsure whether even reading is okay in
+  the moment, ask — but default to checking the actual file rather than
+  asserting from memory or from what was true a few turns ago.
 
 ## Pending project-wide decisions (user's own, tracked as tasks #23/#24)
 

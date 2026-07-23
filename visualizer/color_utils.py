@@ -6,6 +6,7 @@ import pygame
 def _word_to_color(word: str) -> tuple[int, int, int]:
     """Deterministically derive a brightened RGB color from a string."""
     def rescale_brightness(value: int) -> int:
+        """Scale a 0-255 channel value into a brightened range."""
         min_brightness = 15
         return min_brightness + int((value) * (255 - min_brightness) / 255)
 
