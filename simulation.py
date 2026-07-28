@@ -83,11 +83,9 @@ class Engine:
         for hub_role, zone_info in zone_list:
             if hub_role == HubRole.START:
                 self.start_point = zone_info.zone_name
-            if hub_role == HubRole.END:
-                self.end_point = zone_info.zone_name
             self.zones[zone_info.zone_name] = zone_info.to_zone(hub_role)
         self.drones: dict[int, Drone] = {}
-        for drone in range(drone_count):
+        for drone in range(1, drone_count + 1):
             self.drones[drone] = Drone.build_drone(drone)
         self.connections: dict[frozenset[str], ZoneConnection] = {}
         for connection in connection_list:
@@ -250,6 +248,11 @@ class Engine:
         print("Summary")
         print(f"Map: {self.map_path}")
         print(f"Number of drones: {nb_drones}")
+        print("Drone movement counts: ", end="")
+        drone_moves = ", ".join(
+            f"ID: {drone.drone_id} -> {drone.total_move_count}"
+            for drone in self.drones.values())
+        print(drone_moves)
         print(f"Total number of turns to solve: {total_turns}")
         print(f"Average move count per drone: {total_moves / nb_drones:.2f}")
 

@@ -6,7 +6,7 @@ hub: gate_a 1 0 [color=orange max_drones=3]
 hub: gate_b 1 1 [color=orange max_drones=3]
 hub: short_cut 2 0 [zone=blocked color=black]
 hub: detour1 2 1 [color=blue max_drones=2]
-hub: detour2 3 1 [zone=restricted color=brown]
+hub: detour2 3 1 [max_drones=2 zone=restricted color=brown]
 hub: detour3 3 0 [zone=priority color=cyan max_drones=2]
 hub: merge 4 0 [color=yellow max_drones=4]
 hub: tunnel1 5 0 [zone=restricted color=red max_drones=2]
@@ -22,15 +22,15 @@ connection: start-gate_b [max_link_capacity=2]
 connection: gate_a-short_cut
 connection: short_cut-merge
 connection: gate_a-detour1
-connection: gate_b-detour1
-connection: detour1-detour2
-connection: detour2-detour3
-connection: detour3-merge
+connection: gate_b-detour1 [max_link_capacity=2]
+connection: detour1-detour2 [max_link_capacity=3]
+connection: detour2-detour3 [max_link_capacity=4]
+connection: detour3-merge [max_link_capacity=4]
 connection: merge-tunnel1
 connection: tunnel1-tunnel2
 connection: tunnel2-final_gate
 connection: merge-loop1
-connection: loop1-loop2
-connection: loop2-bypass
-connection: bypass-final_gate
+connection: loop1-loop2 [max_link_capacity=4]
+connection: loop2-bypass [max_link_capacity=4]
+connection: bypass-final_gate [max_link_capacity=4]
 connection: final_gate-goal [max_link_capacity=2]

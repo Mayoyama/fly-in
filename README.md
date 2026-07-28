@@ -24,7 +24,7 @@ The program parses a chosen map, plans a complete, conflict-free, turn-by-turn s
 
 ## Instructions
 
-**Requirements:** Python 3.10+, [`pydantic`](https://docs.pydantic.dev/), [`pygame`](https://www.pygame.org/). Dev tools: `flake8`, `mypy`, `pytest`. Managed via [`uv`](https://docs.astral.sh/uv/).
+**Requirements:** Python 3.10+, [`pydantic`](https://docs.pydantic.dev/), [`pygame`](https://www.pygame.org/). Dev tools: `flake8` and `mypy`. Managed via [`uv`](https://docs.astral.sh/uv/).
 
 **Makefile targets:**
 
