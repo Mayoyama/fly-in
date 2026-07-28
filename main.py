@@ -1,8 +1,9 @@
 from simulation import Engine
 from pathlib import Path
-from pathfinding.pathfinder import ScheduleError
+from terminal_outputs import rainbow_text
+from pathfinding import ScheduleError
 from sys import stderr
-import os
+from shutil import get_terminal_size
 
 
 def main() -> None:
@@ -15,15 +16,22 @@ def main() -> None:
     map_list = sorted(Path("maps").rglob("*.txt"))
     map_dict = {i + 1: map_path for i, map_path in enumerate(map_list)}
     while True:
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print("Welcome to Fly-in!".center(100, '='))
-        print("\nMap List:")
+        print("\033[H\033[J")
+        terminal_width = get_terminal_size().columns
+        welcome_text = rainbow_text(
+            " Welcome to Fly-in! ".center(terminal_width, '='))
+        print(welcome_text)
+        print("\nMap List:\n")
 
         for i, map_path in map_dict.items():
             print(f"{i}: {map_path}")
-        print(f"{len(map_list) + 1}: Custom map path")
 
+        print(f"{len(map_list) + 1}: Custom map path")
+        print()
+        print(f"{rainbow_text(''.center(terminal_width,'='))}")
+        print()
         selection = input("Select your map: ")
+
         try:
             map_choice = int(selection)
         except ValueError:
@@ -49,7 +57,7 @@ def main() -> None:
         else:
             filepath = str(map_dict[map_choice])
             break
-
+    print("\033[H\033[J")
     program = Engine(filepath)
     program.run()
 

@@ -1,11 +1,13 @@
-from models.zone import Zone, HubRole
-from models.drone import Drone
-from models.connection import ZoneConnection
-from visualizer.visualizer import Visualizer
-from parsing.parser import Parser
-from pathfinding.pathfinder import Scheduler
-from pathfinding.path_planner import PathPlanner
+from models import Zone, HubRole
+from models import Drone
+from models import ZoneConnection
+from pygame_outputs import Visualizer
+from parsing import Parser
+from pathfinding import Scheduler
+from pathfinding import PathPlanner
+from terminal_outputs import seeded_color_text, rainbow_text
 from dataclasses import dataclass
+from shutil import get_terminal_size
 from enum import Enum
 import pygame
 
@@ -181,6 +183,9 @@ class Engine:
         until closed.
         """
         visualizer = Visualizer(self.zones, self.connections)
+        terminal_width = get_terminal_size().columns
+        rb_str = rainbow_text(' Drone Movements '.center(terminal_width, '='))
+        print(rb_str)
         visualizer.wait_to_start()
         if not visualizer.running:
             return
@@ -233,9 +238,12 @@ class Engine:
 
             for drone_id, move in turns.get(turn, []):
                 self._occupy_zone(move)
-            line = " ".join(f"D{drone_id}-{move.token}"
-                            for drone_id, move in turns.get(turn, []))
-            print(line)
+            tokens = []
+            for drone_id, move in turns.get(turn, []):
+                drone_label = seeded_color_text('D' + str(drone_id), drone_id)
+                tokens.append(f"{drone_label}-{move.token}")
+            line = " ".join(tokens)
+            print(f"{line}\n")
             if not visualizer.running:
                 break
             visualizer.render_frame(mid_positions)
@@ -250,7 +258,8 @@ class Engine:
         print(f"Number of drones: {nb_drones}")
         print("Drone movement counts: ", end="")
         drone_moves = ", ".join(
-            f"ID: {drone.drone_id} -> {drone.total_move_count}"
+            f"{seeded_color_text('D' + str(drone.drone_id), drone.drone_id)}"
+            f" -> {drone.total_move_count}"
             for drone in self.drones.values())
         print(drone_moves)
         print(f"Total number of turns to solve: {total_turns}")
