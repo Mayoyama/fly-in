@@ -33,18 +33,34 @@ def resolve_color(name: str | None) -> pygame.Color:
 
 def draw_rainbow_outline(screen: pygame.Surface, center: tuple[int, int],
                          radius: float, segments: int) -> None:
-    """Draw a multi-segment rainbow-gradient ring outline at center."""
-    cx, cy = center
+    """Draw a multi-segment rainbow-gradient ring outline at center,
+    supersampled for a smooth (anti-aliased) edge."""
+    supersample = 4
     width = int(max(1, 0.3 * radius))
-    outline_radius = radius - width / 2
+    outline_radius = radius
+    margin = width + 2
+    diameter = int(2 * (outline_radius + margin))
+    hi_res_size = diameter * supersample
+
+    ring_surf = pygame.Surface((hi_res_size, hi_res_size), pygame.SRCALPHA)
+    hi_cx = hi_res_size / 2
+    hi_cy = hi_res_size / 2
+    hi_radius = outline_radius * supersample
+    hi_width = width * supersample
+
     for i in range(segments):
         start_angle = 2 * pi * i / segments
         end_angle = 2 * pi * (i + 1) / segments
         hue = i / segments
         r, g, b = hsv_to_rgb(hue, 1, 1)
         color = (int(r * 255), int(g * 255), int(b * 255))
-        pixel_point1 = (cx + outline_radius * cos(start_angle),
-                        cy + outline_radius * sin(start_angle))
-        pixel_point2 = (cx + outline_radius * cos(end_angle),
-                        cy + outline_radius * sin(end_angle))
-        pygame.draw.line(screen, color, pixel_point1, pixel_point2, width)
+        pixel_point1 = (hi_cx + hi_radius * cos(start_angle),
+                        hi_cy + hi_radius * sin(start_angle))
+        pixel_point2 = (hi_cx + hi_radius * cos(end_angle),
+                        hi_cy + hi_radius * sin(end_angle))
+        pygame.draw.line(ring_surf, color, pixel_point1,
+                         pixel_point2, hi_width)
+
+    smooth_surf = pygame.transform.smoothscale(ring_surf, (diameter, diameter))
+    dest_rect = smooth_surf.get_rect(center=center)
+    screen.blit(smooth_surf, dest_rect)

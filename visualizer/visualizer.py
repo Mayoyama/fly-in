@@ -54,7 +54,7 @@ class Visualizer:
                                       self.dimensions.menu_height)
         # Includes icon size calculation
         self.drone_icon = make_drone_icon(
-            max(6, int(0.55 * self.zone_radius)))
+            max(6, int(0.8 * self.zone_radius)))
         # Includes badge size calculation
         self.overflow_badge = make_overflow_badge(
             max(8, int(0.9 * self.zone_radius)))
@@ -97,9 +97,17 @@ class Visualizer:
                                                * self.scale + self.extra_y))
         return int(px), int(py)
 
-    def render_frame(self) -> None:
+    def render_frame(
+        self, moving_positions: list[tuple[float, float]] | None = None
+    ) -> None:
         """Draw one full frame: background, heading, menu, connections,
-        zones, drone icons, and the hover popup, then flip the display."""
+        zones, drone icons, and the hover popup, then flip the display.
+
+        Args:
+            moving_positions: Optional pixel positions of drones
+                currently mid-animation; each gets an extra drone icon
+                drawn there on top of the settled zone counts.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -124,7 +132,7 @@ class Visualizer:
                                    pos, self.zone_radius, 3)
             elif zone.zone_type == ZoneType.PRIORITY:
                 draw_rainbow_outline(self.screen, pos,
-                                     self.zone_radius, 60)
+                                     self.zone_radius, 120)
             count = zone.curr_drone_count
             shown = min(count, 4)
             if shown > 0:
@@ -137,6 +145,10 @@ class Visualizer:
                     rect = self.overflow_badge.get_rect(center=pos)
                     self.screen.blit(self.overflow_badge, rect)
         self._render_popup()
+        if moving_positions is not None:
+            for position in moving_positions:
+                rect = self.drone_icon.get_rect(center=position)
+                self.screen.blit(self.drone_icon, rect)
         pygame.display.flip()
 
     def _render_popup(self) -> None:

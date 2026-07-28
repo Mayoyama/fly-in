@@ -14,7 +14,12 @@ class ZoneConnection:
         self.curr_occupancy = 0
 
     def can_traverse(self) -> int:
-        """Return how many more drones may currently use this link."""
+        """Return how many more drones may currently use this link.
+
+        Returns:
+            The number of free slots before max_link_cap is reached,
+            or 0 if the link is already full.
+        """
         if self.curr_occupancy < self.max_link_cap:
             return self.max_link_cap - self.curr_occupancy
         return 0

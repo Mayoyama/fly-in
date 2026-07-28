@@ -68,5 +68,7 @@ if __name__ == "__main__":
         print("\nCTRL + C detected. Exiting program")
     except ScheduleError as e:
         print(f"\nSchedule Error: {e}")
+    except AssertionError as e:
+        print(f"\nInternal Consistency Error: {e}")
     except Exception as e:
         print(f"\nGeneral exception thrown: {e}")

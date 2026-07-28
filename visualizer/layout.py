@@ -6,7 +6,7 @@ from math import sqrt
 @dataclass(frozen=True)
 class Dimensions:
     """Fixed pixel sizes for the screen's padding, heading, and menu bar."""
-    padding: int = 20
+    padding: int = 40
     heading_height: int = 40
     menu_height: int = 55
 

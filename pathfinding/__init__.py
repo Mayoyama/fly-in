@@ -1,8 +1,8 @@
 from .pathfinder import Scheduler, ScheduleError
-from .path_planner import plan_all_paths
+from .path_planner import PathPlanner
 
 __all__ = [
-	"Scheduler",
-	"ScheduleError",
-	"plan_all_paths"
+    "Scheduler",
+    "ScheduleError",
+    "PathPlanner"
 ]

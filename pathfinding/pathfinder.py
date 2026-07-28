@@ -27,9 +27,10 @@ class Scheduler:
                     depart_turn_nb: int) -> int | None:
         """Check whether this move is legal given current reservations.
 
-        Returns the turn the drone would arrive at `dest` if the move is
-        feasible, or None if it isn't (connection or destination zone
-        lacks capacity at some required turn).
+        Returns:
+            The turn the drone would arrive at `dest` if the move is
+            feasible, or None if it isn't (connection or destination
+            zone lacks capacity at some required turn).
         """
         if self.zones[dest].zone_type == ZoneType.RESTRICTED:
             turns_needed = 2
@@ -97,6 +98,10 @@ class Scheduler:
 
         Read-only — used by the pathfinder to probe waiting without
         reserving anything.
+
+        Returns:
+            True if `dest` has capacity for the wait at `arrival_turn`,
+            False otherwise.
         """
         dest_reserved = self.zone_reserves.get(dest, {}).get(arrival_turn, 0)
         if dest_reserved >= self.zones[dest].get_max_capacity():
@@ -107,6 +112,10 @@ class Scheduler:
         """Commit a wait into the zone reservation table if it's legal.
 
         Called once a drone's path is finalized, to book each waited turn.
+
+        Returns:
+            True if the wait was legal and has now been reserved, False
+            if it wasn't legal (nothing is reserved in that case).
         """
         if not self.can_reserve_wait(dest, arrival_turn):
             return False
@@ -116,4 +125,3 @@ class Scheduler:
         self.zone_reserves[dest][arrival_turn] = current + 1
 
         return True
-
