@@ -93,9 +93,10 @@ def draw_rainbow_outline(screen: pygame.Surface, center: tuple[int, int],
     screen.blit(smooth_surf, dest_rect)
 
 
-def draw_rainbow_line(screen: pygame.Surface, start_pt: tuple[int, int],
+'''
+    def draw_rainbow_line(screen: pygame.Surface, start_pt: tuple[int, int],
                       end_pt: tuple[int, int], width: int, segments: int,
-                      phase: float = 0.0) -> None:
+                      pulse: bool = False, ms_per_cycle: float = 1000) -> None:
     """Draw the segment p1->p2 as a flowing rainbow gradient.
 
     Args:
@@ -104,14 +105,21 @@ def draw_rainbow_line(screen: pygame.Surface, start_pt: tuple[int, int],
         end_pt: The (x, y) end point in pixels.
         width: Line thickness in pixels.
         segments: Number of colored sub-segments along the line.
-        phase: Hue offset (advance it over time for a flowing effect).
+        pulse: If True, the gradient flows over time instead of staying
+            static.
+        ms_per_cycle: Milliseconds per full color cycle when pulse is True.
+            Larger values flow more slowly. Ignored if pulse is False.
     """
     x1, y1 = start_pt
     x2, y2 = end_pt
+    if pulse is True:
+        phase: float = pygame.time.get_ticks() / ms_per_cycle
+    else:
+        phase = 0.0
     for i in range(segments):
         t1, t2 = i / segments, (i + 1) / segments
         r, g, b = hsv_to_rgb((t1 + phase) % 1.0, 1, 1)
         color = (int(r * 255), int(g * 255), int(b * 255))
         sx, sy = (x1 + (x2 - x1) * t1), (y1 + (y2 - y1) * t1)
         ex, ey = (x1 + (x2 - x1) * t2), (y1 + (y2 - y1) * t2)
-        pygame.draw.line(screen, color, (sx, sy), (ex, ey), width)
+        pygame.draw.line(screen, color, (sx, sy), (ex, ey), width)'''

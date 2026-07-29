@@ -1,5 +1,5 @@
 from colorsys import hsv_to_rgb
-from random import seed, uniform
+from math import sqrt
 
 
 def rainbow_text(text: str) -> str:
@@ -33,8 +33,8 @@ def seeded_color_text(text: str, seed_nb: int) -> str:
     Returns:
         The text wrapped in the seeded ANSI color escape.
     """
-    seed(seed_nb)
-    hue = uniform(0.0, 1.0)
+    golden_ratio = (sqrt(5) - 1) / 2
+    hue = (seed_nb * golden_ratio) % 1.0
     r, g, b = hsv_to_rgb(hue, 1, 1)
     true_r, true_g, true_b = (int(r * 255), int(g * 255), int(b * 255))
     return f"\033[38;2;{true_r};{true_g};{true_b}m{text}\033[0m"

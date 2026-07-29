@@ -250,7 +250,7 @@ class Engine:
             if not visualizer.running:
                 break
             visualizer.render_frame(mid_positions)
-            pygame.time.delay(250)
+            pygame.time.delay(100)
 
         total_moves = sum(drone.total_move_count
                           for drone in self.drones.values())

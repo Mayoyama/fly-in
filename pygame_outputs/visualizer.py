@@ -1,8 +1,8 @@
 import pygame
 from models import ZoneConnection, Zone, ZoneType
 from .layout import Dimensions, Layout
-from .color_utils import (resolve_color, draw_rainbow_outline,
-                          draw_rainbow_line)
+from .color_utils import resolve_color, draw_rainbow_outline
+from .line_pulse import draw_pulsing_line
 from .icons_images import (make_drone_icon, make_overflow_badge,
                            position_icons, get_scaled_img)
 from .menu_popups import (make_zone_popup, draw_menu, draw_heading,
@@ -98,7 +98,6 @@ class Visualizer:
         hover_link = (None if hover_zone else
                       self.layout.connection_at(mouse_pos, self.positions,
                                                 self.connections))
-        # phase = pygame.time.get_ticks() / 1000.0
 
         self.screen.blit(self.background_img, (0, 0))
         self.screen.blit(self.heading_surface, (0, 0))
@@ -108,7 +107,9 @@ class Visualizer:
             p1 = self.positions[connection.z1_name]
             p2 = self.positions[connection.z2_name]
             if key == hover_link:
-                draw_rainbow_line(self.screen, p1, p2, 4, 30)  # phase)
+                # draw_rainbow_line(self.screen, p1, p2, 4, 30, True, 1500)
+                draw_pulsing_line(self.screen, p1, p2, color="gold",
+                                  frequency=1.0)
             else:
                 pygame.draw.line(self.screen, (175, 175, 175), p1, p2, 2)
 

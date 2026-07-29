@@ -37,8 +37,9 @@ def make_drone_icon(size: int) -> pygame.Surface:
 
 def position_icons(zone_radius: float,
                    count: int) -> list[tuple[float, float]]:
-    """Return `count` (x, y) offsets from a zone's center, laid out
-    1 2 / 3 4 across the zone's quadrants.
+    """Return `count` (x, y) offsets from a zone's center. A single icon
+    is centered; two or more are laid out 1 2 / 3 4 across the zone's
+    quadrants.
 
     Args:
         zone_radius: Radius of the zone the icons sit in.
@@ -50,9 +51,12 @@ def position_icons(zone_radius: float,
     quadrant_offsets = [(-1, -1), (1, -1), (-1, 1), (1, 1)]
     inset = zone_radius * 0.55
     positions = []
-    for i in range(count):
-        qx, qy = quadrant_offsets[i % 4]
-        positions.append((qx * inset, qy * inset))
+    if count == 1:
+        positions.append((0.0, 0.0))
+    else:
+        for i in range(count):
+            qx, qy = quadrant_offsets[i % 4]
+            positions.append((qx * inset, qy * inset))
     return positions
 
 

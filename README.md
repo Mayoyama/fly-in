@@ -223,7 +223,7 @@ Claude was used in this project as a peer-learning aid, consistent with the 42 p
 
 - **Conceptual explanations** — time-expanded and cooperative (reservation-based) pathfinding, and `pygame` animation techniques (frame-rate-independent timing, linear interpolation, supersampled anti-aliasing).
 - **Design review** — discussing OOP coding philosophy/practices and separation of concerns: example - extracting the `Layout` class out of the `Visualizer`, deciding which helpers should stay as standalone functions rather than being forced into classes.
-- **Explanations of algebraic formulas** - helped workshop algebraic forumlas for calculating things such as segmenting circle into 60+ segments with sin/cosine. 
+- **Explanations of algebraic formulas** - helped workshop algebraic forumlas for calculating things such as segmenting circle into 60+ segments with sin/cosine or applying golden ratio to ANSI color generation to ensure equal hue dispersion.
 - **Debugging assistance** — diagnosing a same-turn zone-vacate/arrive ordering crash, a tie-break issue that let drones oscillate pointlessly, and animation timing artifacts.
 - **Verification** — an independent replay validator that re-derives each drone's position turn-by-turn and checks move legality and capacity limits across every map, plus benchmark turn-count and `flake8` / `mypy` audits.
 - **Documentation** — structuring this README and normalising docstrings for consistency.
