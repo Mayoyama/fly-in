@@ -1,10 +1,13 @@
-from models.connection import ZoneConnection
-from models.zone import Zone, ZoneType
+from models import ZoneConnection, Zone, ZoneType
 
 
 class ScheduleError(Exception):
     def __init__(self, message: str = "ScheduleError") -> None:
-        """Raised when a planned or committed schedule turns out invalid."""
+        """Raised when a planned or committed schedule turns out invalid.
+
+        Args:
+            message: Explanation of the scheduling failure.
+        """
         super().__init__(message)
 
 
@@ -26,6 +29,12 @@ class Scheduler:
     def _check_move(self, origin: str, dest: str, connection: ZoneConnection,
                     depart_turn_nb: int) -> int | None:
         """Check whether this move is legal given current reservations.
+
+        Args:
+            origin: Zone the drone departs from.
+            dest: Zone the drone moves toward.
+            connection: The link between origin and dest.
+            depart_turn_nb: Turn the move starts on.
 
         Returns:
             The turn the drone would arrive at `dest` if the move is
@@ -59,6 +68,12 @@ class Scheduler:
         Read-only — used by the pathfinder to probe candidate edges while
         still searching. Reserves nothing in either table.
 
+        Args:
+            origin: Zone the drone departs from.
+            dest: Zone the drone moves toward.
+            connection: The link between origin and dest.
+            depart_turn_nb: Turn the move starts on.
+
         Returns:
             The turn the drone would arrive at `dest` if the move is
             feasible, or None if it isn't.
@@ -71,6 +86,12 @@ class Scheduler:
         """Commit a move into the reservation tables if it's legal.
 
         Called once a drone's path is finalized, to actually book each hop.
+
+        Args:
+            origin: Zone the drone departs from.
+            dest: Zone the drone moves toward.
+            connection: The link between origin and dest.
+            depart_turn_nb: Turn the move starts on.
 
         Returns:
             True if the move was legal and has now been reserved, False if
@@ -99,6 +120,10 @@ class Scheduler:
         Read-only — used by the pathfinder to probe waiting without
         reserving anything.
 
+        Args:
+            dest: Zone the drone would wait in.
+            arrival_turn: Turn the drone would occupy `dest`.
+
         Returns:
             True if `dest` has capacity for the wait at `arrival_turn`,
             False otherwise.
@@ -112,6 +137,10 @@ class Scheduler:
         """Commit a wait into the zone reservation table if it's legal.
 
         Called once a drone's path is finalized, to book each waited turn.
+
+        Args:
+            dest: Zone the drone waits in.
+            arrival_turn: Turn the drone occupies `dest`.
 
         Returns:
             True if the wait was legal and has now been reserved, False

@@ -2,7 +2,14 @@ import pygame
 
 
 def make_drone_icon(size: int) -> pygame.Surface:
-    """Return a size x size Surface (per-pixel alpha) depicting a drone."""
+    """Return a size x size Surface (per-pixel alpha) depicting a drone.
+
+    Args:
+        size: Width and height of the icon in pixels.
+
+    Returns:
+        The drone icon Surface.
+    """
     surf = pygame.Surface((size, size), pygame.SRCALPHA)
     cx, cy = size / 2, size / 2
 
@@ -31,7 +38,15 @@ def make_drone_icon(size: int) -> pygame.Surface:
 def position_icons(zone_radius: float,
                    count: int) -> list[tuple[float, float]]:
     """Return `count` (x, y) offsets from a zone's center, laid out
-    1 2 / 3 4 across the zone's quadrants."""
+    1 2 / 3 4 across the zone's quadrants.
+
+    Args:
+        zone_radius: Radius of the zone the icons sit in.
+        count: Number of icon offsets to return.
+
+    Returns:
+        The list of (x, y) offsets from the zone center.
+    """
     quadrant_offsets = [(-1, -1), (1, -1), (-1, 1), (1, 1)]
     inset = zone_radius * 0.55
     positions = []
@@ -42,7 +57,15 @@ def position_icons(zone_radius: float,
 
 
 def make_overflow_badge(size: int, text: str = "5+") -> pygame.Surface:
-    """Return a Surface: white `text`, black outline, transparent bg."""
+    """Return a Surface: white `text`, black outline, transparent bg.
+
+    Args:
+        size: Base pixel size driving the font and outline.
+        text: The badge text to render.
+
+    Returns:
+        The cropped badge Surface.
+    """
     surf = pygame.Surface((size * 2, size * 2), pygame.SRCALPHA)
     font = pygame.font.SysFont(None, size)
     black = font.render(text, True, (0, 0, 0))
@@ -71,7 +94,15 @@ def make_overflow_badge(size: int, text: str = "5+") -> pygame.Surface:
 
 def get_scaled_img(win_width: int, win_height: int) -> pygame.Surface:
     """Return the terrain background image scaled and cropped to fill
-    the window, or a plain dark fallback if the image can't be loaded."""
+    the window, or a plain dark fallback if the image can't be loaded.
+
+    Args:
+        win_width: Target window width in pixels.
+        win_height: Target window height in pixels.
+
+    Returns:
+        The scaled-and-cropped background Surface.
+    """
     try:
         bkg_img = pygame.image.load("resources/terrain_v1.png")
         scale = max((win_width / bkg_img.get_width()),

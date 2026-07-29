@@ -1,6 +1,6 @@
 import pygame
 from sys import stderr
-from models.zone import Zone, HubRole
+from models import Zone, HubRole, ZoneConnection, ZoneType
 from .color_utils import draw_rainbow_outline
 from .icons_images import make_drone_icon, make_overflow_badge
 
@@ -12,6 +12,18 @@ def draw_heading(win_width: int, head_height: int, text: str,
     """Render the title heading bar as a standalone Surface.
 
     Falls back to the system font if font_path can't be loaded.
+
+    Args:
+        win_width: Width of the heading bar in pixels.
+        head_height: Height of the heading bar in pixels.
+        text: The heading text to render.
+        font_path: Path to the heading font file.
+        font_color: Color of the heading text.
+        background_color: Fill color of the heading bar.
+        font_size: Point size of the heading font.
+
+    Returns:
+        The heading bar Surface.
     """
     try:
         heading_font = pygame.font.Font(font_path, font_size)
@@ -28,8 +40,15 @@ def draw_heading(win_width: int, head_height: int, text: str,
     return heading_surf
 
 
-def make_popup(zone_info: Zone) -> pygame.Surface:
-    """Render a zone's info card (name, hub role, coords, drone count)."""
+def make_zone_popup(zone_info: Zone) -> pygame.Surface:
+    """Render a zone's info card (name, hub role, coords, drone count).
+
+    Args:
+        zone_info: The zone to render an info card for.
+
+    Returns:
+        The popup card Surface.
+    """
     font = pygame.font.SysFont(None, 16)
     pad = 2
 
@@ -62,9 +81,54 @@ def make_popup(zone_info: Zone) -> pygame.Surface:
     return popup_surf
 
 
+def make_link_popup(conn: ZoneConnection,
+                    z1: Zone, z2: Zone) -> pygame.Surface:
+    """Render a connection's info card (endpoints and link capacity).
+
+    Args:
+        conn: The connection to render an info card for.
+        z1 / z2: The connection's two endpoint zones (used to detect a
+        restricted link).
+    Returns:
+        The popup card Surface.
+    """
+    font = pygame.font.SysFont(None, 16)
+    pad = 2
+    message = f"Link: {conn.z1_name} <-> {conn.z2_name}\n"
+    if ZoneType.RESTRICTED in (z1.zone_type, z2.zone_type):
+        message += f"Traversing: {conn.curr_occupancy}\n"
+    message += f"Max capacity: {conn.max_link_cap}"
+
+    line_surfs = [font.render(line, True, "black")
+                  for line in message.split('\n')]
+
+    popup_width = max(line.get_width() for line in line_surfs) + (pad * 2)
+    popup_height = sum(line.get_height() for line in line_surfs) + (pad * 2)
+
+    popup_surf = pygame.Surface((popup_width, popup_height))
+    popup_surf.fill("white")
+    pygame.draw.rect(popup_surf, "royal blue", popup_surf.get_rect(), 1)
+
+    y = pad
+    for line_surf in line_surfs:
+        rect = line_surf.get_rect(topleft=(pad, y))
+        popup_surf.blit(line_surf, rect)
+        y += line_surf.get_height()
+    return popup_surf
+
+
 def draw_menu(win_width: int, win_height: int,
               menu_height: int) -> pygame.Surface:
-    """Render the bottom legend bar showing icon/outline meanings."""
+    """Render the bottom legend bar showing icon/outline meanings.
+
+    Args:
+        win_width: Width of the legend bar in pixels.
+        win_height: Height of the window in pixels.
+        menu_height: Height of the legend bar in pixels.
+
+    Returns:
+        The legend bar Surface.
+    """
     menu_surf = pygame.Surface((win_width, menu_height))
     menu_surf.fill((0, 128, 128), menu_surf.get_rect())
     menu_font = pygame.font.SysFont(None, 16)

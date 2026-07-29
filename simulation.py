@@ -1,11 +1,10 @@
-from models import Zone, HubRole
-from models import Drone
-from models import ZoneConnection
+from models import Zone, HubRole, Drone, ZoneConnection
 from pygame_outputs import Visualizer
 from parsing import Parser
-from pathfinding import Scheduler
-from pathfinding import PathPlanner
+from pathfinding import Scheduler, PathPlanner
 from terminal_outputs import seeded_color_text, rainbow_text
+from world_builder import (build_drone, build_zone,
+                           build_zone_connection)
 from dataclasses import dataclass
 from shutil import get_terminal_size
 from enum import Enum
@@ -85,14 +84,14 @@ class Engine:
         for hub_role, zone_info in zone_list:
             if hub_role == HubRole.START:
                 self.start_point = zone_info.zone_name
-            self.zones[zone_info.zone_name] = zone_info.to_zone(hub_role)
+            self.zones[zone_info.zone_name] = build_zone(hub_role, zone_info)
         self.drones: dict[int, Drone] = {}
         for drone in range(1, drone_count + 1):
-            self.drones[drone] = Drone.build_drone(drone)
+            self.drones[drone] = build_drone(drone)
         self.connections: dict[frozenset[str], ZoneConnection] = {}
         for connection in connection_list:
             key = frozenset({connection.name1, connection.name2})
-            self.connections[key] = connection.to_connection()
+            self.connections[key] = build_zone_connection(connection)
         scheduler = Scheduler(self.zones, self.connections)
         path_planner = PathPlanner(scheduler)
         self.paths = path_planner.plan_all_paths(self.drones.keys())
@@ -104,6 +103,10 @@ class Engine:
         list of (turn, Move) events. A same-turn collision (a hop's final
         event and the next hop's first event landing on the same turn)
         resolves by the later hop replacing the earlier entry.
+
+        Args:
+            path: The drone's finalized (zone, turn) states.
+            drone_id: Id of the drone the events belong to.
 
         Returns:
             Ordered (turn, Move) pairs. A turn with no entry means the

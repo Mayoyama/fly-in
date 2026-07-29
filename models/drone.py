@@ -1,6 +1,6 @@
 class Drone:
     def __init__(self, drone_id: int) -> None:
-        """Initialize a drone at a starting position with a target.
+        """Initialize a drone with a unique id and a zeroed move count.
 
         Args:
             drone_id: Unique identifier for this drone.
@@ -11,8 +11,3 @@ class Drone:
     def increase_move_count(self) -> None:
         """Increment this drone's total completed move count."""
         self.total_move_count += 1
-
-    @classmethod
-    def build_drone(cls, drone_id: int) -> "Drone":
-        """Construct a Drone with a unique drone ID number."""
-        return Drone(drone_id)

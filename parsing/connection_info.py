@@ -1,8 +1,6 @@
 from re import match
 from typing import Any
-from pydantic import BaseModel, Field, ConfigDict
-from pydantic import field_validator
-from models.connection import ZoneConnection
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 
 class ConnectionInfo(BaseModel):
@@ -16,7 +14,17 @@ class ConnectionInfo(BaseModel):
     @field_validator("name1", "name2")
     @classmethod
     def exclude_chars(cls, value: str) -> str:
-        """Reject connection endpoint names containing dashes or spaces."""
+        """Reject connection endpoint names containing dashes or spaces.
+
+        Args:
+            value: The endpoint name to validate.
+
+        Returns:
+            The validated endpoint name, unchanged.
+
+        Raises:
+            ValueError: If the name contains a dash or space.
+        """
         banned = {"-", " "}
         found = banned.intersection(value)
         if found:
@@ -27,6 +35,12 @@ class ConnectionInfo(BaseModel):
     @classmethod
     def create_connection_info(cls, line: str) -> "ConnectionInfo":
         """Parse a single 'connection:' line into a ConnectionInfo.
+
+        Args:
+            line: The raw connection definition line to parse.
+
+        Returns:
+            The parsed ConnectionInfo.
 
         Raises:
             ValueError: If the line's syntax or metadata is invalid.
@@ -66,7 +80,3 @@ class ConnectionInfo(BaseModel):
             **metadata
         )
         return conn_info
-
-    def to_connection(self) -> ZoneConnection:
-        """Construct a ZoneConnection from parsed ConnectionInfo."""
-        return ZoneConnection(self.name1, self.name2, self.max_link_capacity)

@@ -1,8 +1,7 @@
 from re import match
 from typing import Any
-from pydantic import BaseModel, Field, ConfigDict
-from pydantic import field_validator
-from models.zone import HubRole, ZoneType, Zone
+from pydantic import BaseModel, Field, ConfigDict, field_validator
+from models import HubRole, ZoneType
 from .parsing_utils import convert_atoi
 
 
@@ -19,7 +18,17 @@ class ZoneInfo(BaseModel):
     @field_validator("zone_name")
     @classmethod
     def exclude_chars(cls, value: str) -> str:
-        """Reject zone names containing dashes or spaces."""
+        """Reject zone names containing dashes or spaces.
+
+        Args:
+            value: The zone name to validate.
+
+        Returns:
+            The validated zone name, unchanged.
+
+        Raises:
+            ValueError: If the name contains a dash or space.
+        """
         banned = {"-", " "}
         found = banned.intersection(value)
         if found:
@@ -31,6 +40,12 @@ class ZoneInfo(BaseModel):
     def create_zone_info(cls, line: str) -> tuple[HubRole, "ZoneInfo"]:
         """Parse a single 'hub'/'start_hub'/'end_hub' line into a
         (HubRole, ZoneInfo) pair.
+
+        Args:
+            line: The raw zone definition line to parse.
+
+        Returns:
+            The parsed (HubRole, ZoneInfo) pair.
 
         Raises:
             ValueError: If the line's syntax, hub type, or metadata is invalid.
@@ -85,8 +100,3 @@ class ZoneInfo(BaseModel):
                 zone_info.zone == ZoneType.BLOCKED:
             raise ValueError("start_hub/end_hub cannot be a blocked zone")
         return hub_type, zone_info
-
-    def to_zone(self, role: HubRole) -> Zone:
-        """Construct a Zone from parsed ZoneInfo and its assigned hub role."""
-        return Zone(self.zone_name, self.x_coord, self.y_coord,
-                    self.zone, self.color, self.max_drones, role)

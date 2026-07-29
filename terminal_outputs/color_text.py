@@ -4,7 +4,14 @@ from random import seed, uniform
 
 def rainbow_text(text: str) -> str:
     """Wrap each character of text in a distinct rainbow-gradient
-    color, using ANSI TrueColor escape codes."""
+    color, using ANSI TrueColor escape codes.
+
+    Args:
+        text: The text to colorize.
+
+    Returns:
+        The text with per-character ANSI color escapes.
+    """
     result = ""
     for i, char in enumerate(text):
         hue = i / len(text)
@@ -17,7 +24,15 @@ def rainbow_text(text: str) -> str:
 
 def seeded_color_text(text: str, seed_nb: int) -> str:
     """Color text a deterministic random hue derived from seed_nb, so
-    the same seed (e.g. a drone's id) always produces the same color."""
+    the same seed (e.g. a drone's id) always produces the same color.
+
+    Args:
+        text: The text to colorize.
+        seed_nb: Seed determining the hue.
+
+    Returns:
+        The text wrapped in the seeded ANSI color escape.
+    """
     seed(seed_nb)
     hue = uniform(0.0, 1.0)
     r, g, b = hsv_to_rgb(hue, 1, 1)

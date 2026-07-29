@@ -1,8 +1,8 @@
-from models.zone import HubRole, ZoneType
-from .pathfinder import Scheduler, ScheduleError
+from models import HubRole, ZoneType
 from heapq import heappush, heappop
 from collections import deque
 from typing import Iterable
+from .pathfinder import Scheduler, ScheduleError
 
 
 class PathPlanner:
@@ -25,6 +25,10 @@ class PathPlanner:
         respect BLOCKED zones, since those can never be entered at any
         turn regardless of congestion. Used once per map to confirm a
         timed path could ever exist before running the real search.
+
+        Args:
+            start: Zone to search from.
+            end: Zone to reach.
 
         Returns:
             True if end is reachable from start, False otherwise.
@@ -54,6 +58,9 @@ class PathPlanner:
     def _make_single_path(self, start: str) -> list[tuple[str, int]]:
         """Find the cheapest timed path from start to the goal zone,
         respecting scheduler's existing reservations.
+
+        Args:
+            start: Zone to search from.
 
         Returns:
             Ordered (zone, turn) states from start to goal, or an empty
@@ -124,6 +131,9 @@ class PathPlanner:
         For each drone (in dict order for now), find its cheapest path via
         make_single_path against the scheduler's current reservations, then
         commit every hop/wait in that path so later drones plan around it.
+
+        Args:
+            drone_ids: The drone ids to plan paths for.
 
         Returns:
             Map of drone id to its final (zone, turn) path.

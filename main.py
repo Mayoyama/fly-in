@@ -28,7 +28,7 @@ def main() -> None:
 
         print(f"{len(map_list) + 1}: Custom map path")
         print()
-        print(f"{rainbow_text(''.center(terminal_width,'='))}")
+        print(f"{rainbow_text(''.center(terminal_width, '='))}")
         print()
         selection = input("Select your map: ")
 

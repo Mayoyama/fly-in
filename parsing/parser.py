@@ -1,4 +1,4 @@
-from models.zone import HubRole
+from models import HubRole
 from .zone_info import ZoneInfo
 from .connection_info import ConnectionInfo
 from .parsing_utils import convert_atoi
@@ -6,6 +6,12 @@ from .parsing_utils import convert_atoi
 
 def _get_parsing_data(path_to_map_file: str) -> list[str]:
     """Read a map file and return its lines.
+
+    Args:
+        path_to_map_file: Path to the map file to read.
+
+    Returns:
+        The file's lines, one string per line.
 
     Raises:
         FileNotFoundError, PermissionError, IsADirectoryError,

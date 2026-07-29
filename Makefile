@@ -1,10 +1,10 @@
-.PHONY: install run debug lint lint-strict clean uninstall
-
-install:
-	uv sync
+.PHONY: run install debug lint lint-strict clean uninstall
 
 run:
 	uv run python main.py
+
+install:
+	uv sync
 
 debug:
 	uv run python -m pdb main.py
